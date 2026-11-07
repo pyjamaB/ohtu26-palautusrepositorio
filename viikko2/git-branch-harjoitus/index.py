@@ -14,4 +14,4 @@ print(f"Lukujen {x} ja {y} erotus on {erotus(x, y)}")
 print(f"{x} * {y} = {tulo(x, y)}")
 
 logger("lopetetaan")
-print("goodbye!")
+print("goodbye for now!")
