@@ -1,7 +1,7 @@
 import requests
 from player import Player
 
-class PlayerReader:
+class PlayerReader: # pylint: disable=too-few-public-methods
     def __init__(self, osoite):
         self._url = osoite
 
