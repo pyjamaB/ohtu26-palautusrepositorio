@@ -1,2 +1,3 @@
 def summa(x, y):
-    return x+y
+    summa = x + y
+    return summa
