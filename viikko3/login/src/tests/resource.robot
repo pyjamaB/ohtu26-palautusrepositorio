@@ -49,3 +49,7 @@ Set Username
 Set Password
     [Arguments]  ${password}
     Fill Secret  id=password  $password
+
+Set Password Confirmation
+    [Arguments]  ${password_confirmation}
+    Fill Secret  id=password_confirmation  $password_confirmation

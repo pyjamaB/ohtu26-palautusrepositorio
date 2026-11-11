@@ -44,6 +44,12 @@ class UserService:
             raise UserInputError("Username must have atleast 3 characters")
         elif len(password) < 8:
             raise UserInputError("Password must have atleast 8 characters")
+        elif password.isalpha():
+            raise UserInputError(
+                "Password must contain a number or special character"
+            )
+        elif password != password_confirmation:
+            raise UserInputError("Passwords do not match")
         existing_username = self._user_repository.find_by_username(username)
         if existing_username:
             raise UserInputError("Username already in use")
