@@ -17,14 +17,9 @@ uv sync
 # Start the Flask application on http://localhost:5001
 uv run python src/index.py
 
-# Run all browser tests
-uv run robot browser
+# Run all tests
+uv run robot src/tests
 
-# Run one Robot Framework test case
-uv run robot -t "Test case name" browser/login.robot
-
-# Run one Robot Framework suite file
-uv run robot browser/login.robot
 ```
 
 There is no configured Python unit-test suite in `src/tests` and no separate
