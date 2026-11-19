@@ -1,0 +1,3 @@
+[run]
+include = src/kauppa.py
+omit = src/**/__init__.py,src/tests/**,src/ui/**,src/index.py

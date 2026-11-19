@@ -2,12 +2,12 @@ import unittest
 from unittest.mock import Mock
 from kauppa import Kauppa
 from tuote import Tuote
+from viitegeneraattori import Viitegeneraattori
 
 class TestKauppa(unittest.TestCase):
     def setUp(self):
         self.pankki_mock = Mock()
-        self.viitegeneraattori_mock = Mock()
-        self.viitegeneraattori_mock.uusi.return_value = 42
+        self.viitegeneraattori_mock = Mock(wraps=Viitegeneraattori())
         self.varasto_mock = Mock()
 
         tuotteet = {
@@ -42,7 +42,7 @@ class TestKauppa(unittest.TestCase):
         self.kauppa.tilimaksu("pekka", "12345")
 
         self.pankki_mock.tilisiirto.assert_called_with(
-            "pekka", 42, "12345", "33333-44455", 5
+            "pekka", 2, "12345", "33333-44455", 5
         )
 
     def test_maksettaessa_kaksi_eri_tuotetta_pankin_metodia_tilisiirto_kutsutaan_oikealla_asiakkaalla_tilinumeroilla_summalla(self):
@@ -51,7 +51,7 @@ class TestKauppa(unittest.TestCase):
         self.kauppa.tilimaksu("pekka", "12345")
 
         self.pankki_mock.tilisiirto.assert_called_with(
-            "pekka", 42, "12345", "33333-44455", 12
+            "pekka", 2, "12345", "33333-44455", 12
         )
 
     def test_maksettaessa_kaksi_samaa_varastossa_olevaa_tuotetta_pankin_metodia_tilisiirto_kutsutaan_oikealla_asiakkaalla_tilinumeroilla_summalla(self):
@@ -60,7 +60,7 @@ class TestKauppa(unittest.TestCase):
         self.kauppa.tilimaksu("pekka", "12345")
 
         self.pankki_mock.tilisiirto.assert_called_with(
-            "pekka", 42, "12345", "33333-44455", 10
+            "pekka", 2, "12345", "33333-44455", 10
         )
 
     def test_maksettaessa_kaksi_eri_tuotetta_toinen_loppu_pankin_metodia_tilisiirto_kutsutaan_oikealla_asiakkaalla_tilinumeroilla_summalla(self):
@@ -70,5 +70,28 @@ class TestKauppa(unittest.TestCase):
         self.kauppa.tilimaksu("pekka", "12345")
 
         self.pankki_mock.tilisiirto.assert_called_with(
-            "pekka", 42, "12345", "33333-44455", 5
+            "pekka", 2, "12345", "33333-44455", 5
         )
+
+    def test_aloita_asionti_nollaa_edellisen_ostoksen_tiedot(self):
+        self.kauppa.lisaa_koriin(1)
+        self.kauppa.aloita_asiointi()
+        self.kauppa.tilimaksu("pekka", "12345")
+
+        self.pankki_mock.tilisiirto.assert_called_with("pekka", 2, "12345", "33333-44455", 0)
+
+    def test_kauppa_pyytaa_uuden_viitenumeron_jokaiselle_maksutapahtumalle(self):
+        self.kauppa.lisaa_koriin(1)
+        self.kauppa.tilimaksu("pekka", "12345")
+        self.kauppa.tilimaksu("pekka", "12345")
+
+        self.pankki_mock.tilisiirto.assert_called_with("pekka", 3, "12345", "33333-44455", 5)
+
+    def test_tuote_poistuu_ostoskorista_poistettaessa(self):
+        self.kauppa.lisaa_koriin(1)
+        self.kauppa.lisaa_koriin(2)
+        self.kauppa.poista_korista(1)
+
+        self.kauppa.tilimaksu("pekka", "12345")
+        
+        self.pankki_mock.tilisiirto.assert_called_with("pekka", 2, "12345", "33333-44455", 7)
