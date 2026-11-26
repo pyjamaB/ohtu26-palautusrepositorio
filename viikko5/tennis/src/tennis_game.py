@@ -11,45 +11,60 @@ class TennisGame:
         else:
             self.m_score2 = self.m_score2 + 1
 
-    def get_score(self):
-        score = ""
-        temp_score = 0
+    def even_score_is_true(self):
+        return self.m_score1 == self.m_score2
 
-        if self.m_score1 == self.m_score2:
-            if self.m_score1 == 0:
-                score = "Love-All"
-            elif self.m_score1 == 1:
-                score = "Fifteen-All"
-            elif self.m_score1 == 2:
-                score = "Thirty-All"
-            else:
-                score = "Deuce"
-        elif self.m_score1 >= 4 or self.m_score2 >= 4:
-            minus_result = self.m_score1 - self. m_score2
-
-            if minus_result == 1:
-                score = "Advantage player1"
-            elif minus_result == -1:
-                score = "Advantage player2"
-            elif minus_result >= 2:
-                score = "Win for player1"
-            else:
-                score = "Win for player2"
+    def even_score(self):
+        if self.m_score1 == 0:
+            return "Love-All"
+        elif self.m_score1 == 1:
+            return "Fifteen-All"
+        elif self.m_score1 == 2:
+            return "Thirty-All"
         else:
-            for i in range(1, 3):
-                if i == 1:
-                    temp_score = self.m_score1
-                else:
-                    score = score + "-"
-                    temp_score = self.m_score2
+            return "Deuce"
 
-                if temp_score == 0:
-                    score = score + "Love"
-                elif temp_score == 1:
-                    score = score + "Fifteen"
-                elif temp_score == 2:
-                    score = score + "Thirty"
-                elif temp_score == 3:
-                    score = score + "Forty"
+    def leading_score_is_true(self):
+        return self.m_score1 >= 4 or self.m_score2 >= 4
 
+    def leading_score(self):
+        minus_result = self.m_score1 - self. m_score2
+        
+        if minus_result == 1:
+            return "Advantage player1"
+        elif minus_result == -1:
+            return "Advantage player2"
+        elif minus_result >= 2:
+            return "Win for player1"
+        else:
+            return "Win for player2"
+
+    def regular_scores(self):
+        score = ""
+        points = 0
+
+        for i in range(1, 3):
+            if i == 1:
+                points = self.m_score1
+            else:
+                score = score + "-"
+                points = self.m_score2
+
+            if points == 0:
+                score = score + "Love"
+            elif points == 1:
+                score = score + "Fifteen"
+            elif points == 2:
+                score = score + "Thirty"
+            elif points == 3:
+                score = score + "Forty"
         return score
+
+    def get_score(self):
+        
+        if self.even_score_is_true():
+            return self.even_score()
+        elif self.leading_score_is_true():
+            return self.leading_score()
+        else:
+            return self.regular_scores()
